@@ -1,7 +1,7 @@
 import csv
 
 # Adjust 'rows' to scale the file size
-rows = 10 
+rows = 500000000
 filename = "input.csv"
 
 print(f"Generating {filename}...")
