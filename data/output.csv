@@ -1,5 +1,6 @@
 Name,Age,Salary
 "String","Int","Float"
+USER_4,4,56.
 USER_5,5,57.5
 USER_6,6,59.
 USER_7,7,60.5

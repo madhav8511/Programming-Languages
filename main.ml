@@ -18,14 +18,14 @@ let () =
     (* 2. Build Pipeline using Type-Specific Operations *)
     let processed_stream = 
       stream
-      |> Int_ops.filter_min "Age" 5
+      |> Int_ops.filter_min "Age" 4
       |> String_ops.to_uppercase "Name"
       |> Float_ops.add_bonus "Salary" 50.0
     in
 
     (* 3. Write out to new CSV (Preserving the Schema row!) *)
     File_writer.write_csv output_file schema processed_stream;
-    Printf.printf "Successfully processed data to %s\n\n", output_file;
+    Printf.printf "Successfully processed data to output.csv\n";
 
     (* 4. Analytics Phase (Reads the new file) *)
     let _, new_stream = File_reader.read_csv_with_schema output_file in

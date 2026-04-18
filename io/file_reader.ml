@@ -1,4 +1,4 @@
-(* src/io/file_reader.ml *)
+(* io/file_reader.ml *)
 open Data_type
 
 (* Safely strip quotes and determine type *)
@@ -42,7 +42,7 @@ let read_csv_with_schema filename =
   in
   let schema = zip_schema headers type_strings [] in
 
-  (* 3. Parse Data Lazily *)
+  (* 3. Parse Data Lazily using Seq.of_dispenser *)
   let parse_row line =
     let values = String.split_on_char ',' line in
     let rec zip_row sch vals acc =
@@ -54,12 +54,13 @@ let read_csv_with_schema filename =
     zip_row schema values []
   in
 
-  let rec yield_next_row () =
+  let lazy_stream = Seq.of_dispenser (fun () ->
     try
       let line = input_line ic in
-      Seq.Cons (parse_row line, yield_next_row)
+      Some (parse_row line)
     with End_of_file ->
       close_in ic;
-      Seq.Nil
-  in
-  (schema, yield_next_row)
+      None
+  ) in
+  
+  (schema, lazy_stream)

@@ -1,0 +1,10 @@
+# OCaml Native Compiled Files
+*.cmi
+*.cmx
+*.o
+
+*.cmo
+*.cma
+
+pipeline
+data/output.csv
