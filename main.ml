@@ -1,51 +1,40 @@
-(* main.ml *)
-open Types
-open Operations
-open Io
+open Data_type
+open File_reader
+open File_writer
+open Int_ops
+open Float_ops
+open String_ops
 
 let () =
-  let input_file = "input.csv" in
-  let output_file = "output.csv" in
-  let headers = ["Name"; "Age"; "Salary"] in
+  let input_file = "data/input.csv" in
+  let output_file = "data/output.csv" in
 
-  (* Provide a warning if input file doesn't exist to prevent crashes *)
   if not (Sys.file_exists input_file) then
-    Printf.printf "Error: Please create an '%s' file first!\n" input_file
+    Printf.printf "Error: Cannot find %s\n" input_file
   else begin
-    Printf.printf "Starting Data Processing Pipeline...\n";
+    (* 1. Read schema and lazy sequence *)
+    let schema, stream = File_reader.read_csv_with_schema input_file in
 
-    (* =============================================== *)
-    (* STEP 1: PREPROCESSING PIPELINE (Maps & Filters) *)
-    (* =============================================== *)
-    let pipeline_stream = 
-      Io.read_csv_lazy input_file
-      |> filter_min_age 5        (* Keep Age >= 5 *)
-      |> name_to_uppercase        (* Convert Names to UPPERCASE *)
-      |> give_salary_bonus 50.0   (* Add $50 to Salary *)
+    (* 2. Build Pipeline using Type-Specific Operations *)
+    let processed_stream = 
+      stream
+      |> Int_ops.filter_min "Age" 5
+      |> String_ops.to_uppercase "Name"
+      |> Float_ops.add_bonus "Salary" 50.0
     in
 
-    (* Consumer 1: Consume the stream and write to CSV *)
-    Io.write_csv output_file headers pipeline_stream;
-    Printf.printf "Transformation complete. Check '%s'.\n\n" output_file;
+    (* 3. Write out to new CSV (Preserving the Schema row!) *)
+    File_writer.write_csv output_file schema processed_stream;
+    Printf.printf "Successfully processed data to %s\n\n", output_file;
 
-    (* =============================================== *)
-    (* STEP 2: AGGREGATIONS (Analytics)                *)
-    (* =============================================== *)
-    (* Because writing to the CSV consumed the lazy stream, 
-       we open the NEW output file lazily to run analytics on it. *)
-    
-    let analytics_stream = Io.read_csv_lazy output_file in
-    
-    (* NOTE: We must convert the stream to a list here because 
-       aggregations consume the sequence, and we want to run 3 of them. *)
-    let memory_data = List.of_seq analytics_stream in
+    (* 4. Analytics Phase (Reads the new file) *)
+    let _, new_stream = File_reader.read_csv_with_schema output_file in
+    let mem_list = List.of_seq new_stream in
 
-    let tot_sal = total_salary (List.to_seq memory_data) in
-    let avg_sal = mean_salary (List.to_seq memory_data) in
-    let avg_age = mean_age (List.to_seq memory_data) in
+    let avg_age = Int_ops.mean "Age" (List.to_seq mem_list) in
+    let tot_sal = Float_ops.total "Salary" (List.to_seq mem_list) in
 
     Printf.printf "--- Analytics on Output Data ---\n";
+    Printf.printf "Average Age : %.2f\n" avg_age;
     Printf.printf "Total Salary: %.2f\n" tot_sal;
-    Printf.printf "Mean Salary : %.2f\n" avg_sal;
-    Printf.printf "Mean Age    : %.2f\n" avg_age;
   end
