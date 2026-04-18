@@ -18,7 +18,7 @@ let () =
     (* 2. Build Pipeline using Type-Specific Operations *)
     let processed_stream = 
       stream
-      |> Int_ops.filter_min "Age" 4
+      |> Int_ops.filter_min "Age" 5
       |> String_ops.to_uppercase "Name"
       |> Float_ops.add_bonus "Salary" 50.0
     in
