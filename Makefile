@@ -25,6 +25,9 @@ $(TARGET): $(SOURCES)
 run: $(TARGET)
 	./$(TARGET)
 
+bench: $(SOURCES) benchmark.ml
+	$(COMPILER) $(INCLUDES) -o benchmark $(SOURCES) benchmark.ml
+	./benchmark
 
 clean:
 	rm -f $(TARGET)

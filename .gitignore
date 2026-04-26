@@ -5,6 +5,7 @@
 
 *.cmo
 *.cma
+*.csv
 
 pipeline
-data/output.csv
+benchmark
