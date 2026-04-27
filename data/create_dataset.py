@@ -1,17 +1,30 @@
 import csv
+import os
 
-# Adjust 'rows' to scale the file size 500000000
-rows = 10
-filename = "input.csv"
+# Adjust 'rows' to scale the file size (e.g., 5000000 for a massive dataset)
+rows = 20
+file1 = "input1.csv"
+file2 = "input2.csv"
 
-print(f"Generating {filename}...")
+print(f"Generating {file1} and {file2}...")
 departments = ["HR", "Engineering", "Marketing", "Sales", "Finance"]
 
-with open(filename, mode='w', newline='') as file:
-    writer = csv.writer(file)
-    writer.writerow(["Name", "Age", "Salary", "Department"])
-    writer.writerow(["String", "Int", "Float", "String"])
+# 1. Generate input1.csv (Name, Age, Salary)
+with open(file1, mode='w', newline='') as f1:
+    writer1 = csv.writer(f1)
+    writer1.writerow(["Name", "Age", "Salary"])
+    writer1.writerow(["String", "Int", "Float"])
+    
     for i in range(rows):
-        writer.writerow([f"User_{i}", i % 100, i * 1.5, departments[i % len(departments)]])
+        writer1.writerow([f"User_{i}", i % 100, i * 1.5])
 
-print("Test data generated.")
+# 2. Generate input2.csv (Name, Age, Department)
+with open(file2, mode='w', newline='') as f2:
+    writer2 = csv.writer(f2)
+    writer2.writerow(["Name", "Age", "Department"])
+    writer2.writerow(["String", "Int", "String"])
+    
+    for i in range(rows):
+        writer2.writerow([f"User_{i}", i % 100, departments[i % len(departments)]])
+
+print("Test data generated successfully! Ready for the Laminar Engine.")

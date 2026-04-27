@@ -11,6 +11,8 @@ SOURCES  = \
 	operations/int_ops.ml \
 	operations/float_ops.ml \
 	operations/string_ops.ml \
+	operations/join_ops.ml \
+	operations/aggregate_ops.ml \
 	main.ml
 
 # --- Rules ---
