@@ -12,6 +12,25 @@ let add_bonus col_name bonus seq =
     ) row
   ) seq
 
+let add_dept_bonus target_col dept_col dept_name bonus seq =
+  Seq.map (fun row ->
+    let qualifies = match List.assoc_opt dept_col row with
+      | Some (VString d) when d = dept_name -> true
+      | _ -> false
+    in
+    if qualifies then
+      List.map (fun (k, v) ->
+        if k = target_col then
+          match v with
+          | VFloat f -> (k, VFloat (f +. bonus))
+          | VInt i -> (k, VFloat (float_of_int i +. bonus))
+          | _ -> (k, v)
+        else (k, v)
+      ) row
+    else
+      row
+  ) seq
+
 let total col_name seq =
   Seq.fold_left (fun acc row ->
     match List.assoc_opt col_name row with

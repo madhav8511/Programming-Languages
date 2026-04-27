@@ -47,8 +47,9 @@ let () =
 
     let processed_stream = 
       stream_joined
-      |> Int_ops.filter_min "Age" 10
+      |> Int_ops.filter_min "Age" 5
       |> String_ops.to_uppercase "Name"
+      |> Float_ops.add_dept_bonus "Salary" "Department" "Engineering" 500.0
       |> String_ops.append_suffix "Department" "_DEPT"
       |> Float_ops.add_bonus "Salary" 10.0
     in
