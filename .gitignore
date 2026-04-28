@@ -6,6 +6,7 @@
 *.cmo
 *.cma
 *.csv
+*.json
 
-pipeline
-benchmark
+pipeline_csv
+pipeline_json

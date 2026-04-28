@@ -3,8 +3,8 @@ import os
 
 # Adjust 'rows' to scale the file size (e.g., 5000000 for a massive dataset)
 rows = 10
-file1 = "input1.csv"
-file2 = "input2.csv"
+file1 = "data/csv/input1.csv"
+file2 = "data/csv/input2.csv"
 
 print(f"Generating {file1} and {file2}...")
 departments = ["HR", "Engineering", "Marketing", "Sales", "Finance"]

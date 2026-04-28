@@ -1,41 +1,50 @@
 # --- Variables ---
 COMPILER = ocamlopt
 INCLUDES = -I types -I io -I operations
-TARGET   = pipeline
 
-# Source files
-SOURCES  = \
-	types/data_type.ml \
-	io/file_reader.ml \
-	io/file_writer.ml \
-	operations/int_ops.ml \
-	operations/float_ops.ml \
-	operations/string_ops.ml \
-	operations/join_ops.ml \
-	operations/aggregate_ops.ml \
-	main.ml
+# 1. Separate the Core Engine from the Main Execution Files
+CORE_SOURCES  = \
+    types/data_type.ml \
+    io/csv_reader.ml \
+    io/csv_writer.ml \
+    io/json_reader.ml \
+    io/json_writer.ml \
+    operations/int_ops.ml \
+    operations/float_ops.ml \
+    operations/string_ops.ml \
+    operations/join_ops.ml \
+    operations/aggregate_ops.ml
 
 # --- Rules ---
 
-all: $(TARGET)
+# Default rule builds both executables
+all: pipeline_csv pipeline_json
 
-# Rule to build the executable
-$(TARGET): $(SOURCES)
-	$(COMPILER) $(INCLUDES) -o $(TARGET) $(SOURCES)
+# 2. Build rules for independent executables
+pipeline_csv: $(CORE_SOURCES) csv_main.ml
+	$(COMPILER) $(INCLUDES) -o pipeline_csv $(CORE_SOURCES) csv_main.ml
 
+pipeline_json: $(CORE_SOURCES) json_main.ml
+	$(COMPILER) $(INCLUDES) -o pipeline_json $(CORE_SOURCES) json_main.ml
 
-run: $(TARGET)
-	./$(TARGET)
+# 3. Independent Run Commands
+run_csv: pipeline_csv
+	./pipeline_csv
 
-bench: $(SOURCES) benchmark.ml
-	$(COMPILER) $(INCLUDES) -o benchmark $(SOURCES) benchmark.ml
+run_json: pipeline_json
+	./pipeline_json
+
+# 4. Benchmark only needs the core sources, not the main files
+bench: $(CORE_SOURCES) benchmark.ml
+	$(COMPILER) $(INCLUDES) -o benchmark $(CORE_SOURCES) benchmark.ml
 	./benchmark
 
+# 5. Clean up all generated executables
 clean:
-	rm -f $(TARGET)
+	rm -f pipeline_csv pipeline_json benchmark
 	rm -f *.cmi *.cmx *.o
 	rm -f types/*.cmi types/*.cmx types/*.o
 	rm -f io/*.cmi io/*.cmx io/*.o
 	rm -f operations/*.cmi operations/*.cmx operations/*.o
 
-.PHONY: all run clean
+.PHONY: all run_csv run_json bench clean
