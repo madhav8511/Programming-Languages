@@ -1,0 +1,21 @@
+Commands to measure : 
+    - Time : time _command_
+    - Memory : /usr/bin/time _command_
+
+On 100000 data rows : 
+    - Ocaml execution time : 0.565 seconds
+    - Python execution time : 0.716 seconds
+
+Even at a relatively small scale of 95,000 rows—where the hard drive reading and 
+writing (I/O) is the biggest bottleneck for both languages—your compiled 
+OCaml engine is still roughly 26% faster than the Python equivalent.
+
+On 10000000 data rows : 
+    - Ocaml execution time : 53.287 seconds
+    - Python execution time : 1 minute 5.58 seconds
+
+    - Look at the Maximum resident set size (kbytes):
+        Traditional (Eager): 2,508,004 KB (approx. 2.5 Gigabytes)
+        Laminar (Lazy): 6,448 KB (approx. 6.4 Megabytes)
+
+    File size is 270 Mb (Reason for high ram usage) : Disk size only measures raw characters. RAM size measures pointers, object headers, and structural metadata.

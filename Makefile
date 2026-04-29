@@ -34,17 +34,18 @@ run_csv: pipeline_csv
 run_json: pipeline_json
 	./pipeline_json
 
-# 4. Benchmark only needs the core sources, not the main files
-bench: $(CORE_SOURCES) benchmark.ml
-	$(COMPILER) $(INCLUDES) -o benchmark $(CORE_SOURCES) benchmark.ml
-	./benchmark
+# Target to build and run the Eager Memory Benchmark
+run_eager: $(CORE_SOURCES) benchmark/eager_benchmark.ml
+	$(COMPILER) $(INCLUDES) -o eager_run types/data_type.ml io/csv_reader.ml benchmark/eager_benchmark.ml
+	./eager_run
 
 # 5. Clean up all generated executables
 clean:
-	rm -f pipeline_csv pipeline_json benchmark
+	rm -f pipeline_csv pipeline_json eager_run
 	rm -f *.cmi *.cmx *.o
 	rm -f types/*.cmi types/*.cmx types/*.o
 	rm -f io/*.cmi io/*.cmx io/*.o
 	rm -f operations/*.cmi operations/*.cmx operations/*.o
+	rm -f benchmark/*.cmi benchmark/*.cmx benchmark/*.o
 
-.PHONY: all run_csv run_json bench clean
+.PHONY: all run_csv run_json run_eager clean

@@ -10,3 +10,4 @@
 
 pipeline_csv
 pipeline_json
+eager_run
