@@ -3,8 +3,8 @@ import os
 
 # Adjust 'rows' to scale the file size (e.g., 5000000 for a massive dataset)
 rows = 10
-file1 = "data/json/input1.json"
-file2 = "data/json/input2.json"
+file1 = "input1.json"
+file2 = "input2.json"
 
 
 print(f"Generating {file1} and {file2}...")
