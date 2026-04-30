@@ -9,29 +9,26 @@ open Join_ops
 open Aggregate_ops
 
 let () =
-  (* 1. Swap extensions to .json and update paths *)
-  let file1 = "data/json/input1.json" in
-  let file2 = "data/json/input2.json" in
-  let joined_file = "data/json/joined.json" in
-  let output_file = "data/json/output.json" in
-  let normalized_output_file = "data/json/normalized_output.json" in
+  let file1 = "data/json/input1.jsonl" in
+  let file2 = "data/json/input2.jsonl" in
+  let joined_file = "data/json/joined.jsonl" in
+  let output_file = "data/json/output.jsonl" in
+  let normalized_output_file = "data/json/normalized_output.jsonl" in
 
   if not (Sys.file_exists file1) || not (Sys.file_exists file2) then
     Printf.printf "Error: Cannot find input files!\n"
   else begin
-    Printf.printf "Igniting the Laminar Data Engine (JSON Mode)...\n";
+    Printf.printf "Igniting the Laminar Data Engine (JSONL Mode)...\n";
 
     (* PHASE 1: Data Integration (Join) *)
     Printf.printf "\n--- Phase 1: Joining Files ---\n";
-    (* 2. Call Json_reader instead of Csv_reader *)
     let schema1, stream1 = Json_reader.read_json_with_schema file1 in
     let schema2, stream2 = Json_reader.read_json_with_schema file2 in
     
     let joined_schema, joined_stream = Join_ops.fully_lazy_join "Name" schema1 stream1 schema2 stream2 in
     
-    (* 3. Call Json_writer instead of Csv_writer *)
     Json_writer.write_json joined_file joined_schema joined_stream;
-    Printf.printf "Successfully joined input1 and input2 into joined.json\n";
+    Printf.printf "Successfully joined input1 and input2 into joined.jsonl\n";
 
 
     (* PHASE 2: Group-By Aggregation *)
@@ -45,7 +42,6 @@ let () =
     Printf.printf "\n--- Phase 3: Core Transformations ---\n";
     let schema_joined, stream_joined = Json_reader.read_json_with_schema joined_file in
 
-    (* Notice how this pipeline logic is IDENTICAL to the CSV version! *)
     let processed_stream = 
       stream_joined
       |> Int_ops.filter_min "Age" 5
@@ -56,7 +52,7 @@ let () =
     in
 
     Json_writer.write_json output_file schema_joined processed_stream;
-    Printf.printf "Successfully processed data to output.json\n";
+    Printf.printf "Successfully processed data to output.jsonl\n";
 
 
     (* PHASE 4: Normalization & Scaling *)
@@ -68,7 +64,7 @@ let () =
     let _, stream_ns_apply = Json_reader.read_json_with_schema output_file in
     let normalized_stream = Float_ops.standardize "Salary" mean_sal std_dev_sal stream_ns_apply in
     Json_writer.write_json normalized_output_file schema_out normalized_stream;
-    Printf.printf "Successfully wrote normalized data to normalized_output.json\n";
+    Printf.printf "Successfully wrote normalized data to normalized_output.jsonl\n";
 
 
     (* PHASE 5: Final Analytics *)
@@ -82,5 +78,5 @@ let () =
     let out_mean_sal, out_std_sal = Float_ops.get_stats "Salary" stream_for_salary in
     Printf.printf "Final Normalized Salary - Mean: %.2f | Std Dev: %.2f\n" out_mean_sal out_std_sal;
     
-    Printf.printf "\nJSON Pipeline execution complete!\n";
+    Printf.printf "\nJSONL Pipeline execution complete!\n";
   end

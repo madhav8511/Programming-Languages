@@ -6,7 +6,7 @@
 *.cmo
 *.cma
 *.csv
-*.json
+*.jsonl
 
 pipeline_csv
 pipeline_json
