@@ -1,6 +1,6 @@
 # Functional Data Science: The Lazy Data Engine
 
-This repository contains the Laminar Data Engine, a purely functional and lazily-evaluated data processing pipeline built in OCaml. It is designed to process massive datasets (CSV and JSON) with an $O(1)$ memory footprint using deferred execution and structural sharing.
+This repository contains the Lazy Data Engine, a purely functional and lazily-evaluated data processing pipeline built in OCaml. It is designed to process massive datasets (CSV and JSON) with an $O(1)$ memory footprint using deferred execution and structural sharing.
 
 ## Quick Start Guide
 
